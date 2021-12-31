@@ -1,6 +1,7 @@
 package rdbms
 
 import (
+	"time"
 	"context"
 	"database/sql"
 	"fmt"
@@ -203,6 +204,19 @@ func (p *Postgres) withTx(ctx context.Context, act func(*sql.Tx) error) error {
 }
 
 func (p *Postgres) InsertBulkTable(ctx context.Context, table Table) error {
+	start := time.Now()
+	var err error
+	defer func() {
+		msElapsed :=  time.Since(start).Milliseconds()
+		if err != nil {
+			p.log.Info().Err(err).
+				Int64("ms_elapsed", msElapsed).
+				Msgf("finished insert to table %s with error", table.Name)
+		} else {
+			p.log.Info().Int64("ms_elapsed", msElapsed).
+				Msgf("finished insert to table %s successfully", table.Name)
+		}
+	}()
 	stmt, ok := p.bulkInsertStmt[table.Name]
 	if !ok {
 		return fmt.Errorf("bulk insert prepared statement not found for table: %s", table.Name)
@@ -210,7 +224,7 @@ func (p *Postgres) InsertBulkTable(ctx context.Context, table Table) error {
 	if table.Seeder == nil {
 		return fmt.Errorf("table %s has no seeder", table.Name)
 	}
-	err := p.withTx(ctx, func(tx *sql.Tx) error {
+	err = p.withTx(ctx, func(tx *sql.Tx) error {
 		// TODO proper bulk insert
 		for {
 			row, hasData, err := table.Seeder.Next()

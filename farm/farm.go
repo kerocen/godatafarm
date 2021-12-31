@@ -16,9 +16,17 @@ type Farm struct {
 // TODO create othe farms that we can modify the log io.Writer target, the timesamps, and so on (see zerolog.NewConsoleWriter)
 // TODO setup a simple github action with linter only
 // default farm, logs to console
-func NewFarm() *Farm {
+// logLevel value follows https://pkg.go.dev/github.com/rs/zerolog#readme-leveled-logging
+// possible logLevel values: "trace", "debug", "info", "warn", "error, "fatal", "panic", "disabled"
+// if unspecified (empty string) or invalid, will defaults to "disabled" which disables any internal logging
+func NewFarm(logLevel string) *Farm {
 	out := zerolog.NewConsoleWriter()
-	log := zerolog.New(out).With().Str("component", "go-data-farm").Logger()
+
+	ll, err := zerolog.ParseLevel(logLevel)
+	if err != nil {
+		ll = zerolog.Disabled
+	}
+	log := zerolog.New(out).With().Str("component", "go-data-farm").Logger().Level(ll)
 	f := &Farm{
 		log: log,
 	}
