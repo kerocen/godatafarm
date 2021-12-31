@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/rs/zerolog"
-	"godatafarm/rdbms"
+	"github.com/kerocen/godatafarm/rdbms"
 )
 
 type Farm struct {

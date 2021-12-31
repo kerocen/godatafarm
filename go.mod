@@ -1,4 +1,4 @@
-module godatafarm
+module github.com/kerocen/godatafarm
 
 go 1.17
 

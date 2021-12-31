@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/stdlib"
 	"github.com/rs/zerolog"
-	dataFarmErr "godatafarm/error"
+	dataFarmErr "github.com/kerocen/godatafarm/error"
 	"strings"
 )
 
