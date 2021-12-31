@@ -71,7 +71,7 @@ func main() {
 	tables := []rdbms.Table{userTable, userSyncTable}
 
 	// instantiate the dataFarm
-	dataFarm := farm.NewFarm()
+	dataFarm := farm.NewFarm("info")
 	// PostgresConnectionBasic is only a helper tool to create postgres DSN
 	pgConnString := farm.PostgresConnectionBasic("root", "root", "localhost", 5432, "postgres")
 	// attach Postgres to the dataFarm
